@@ -1,1 +1,2 @@
-indique neste arquivo, no formato ABNT, as referências utilizada.
+[1] http://ghiorzi.org/sudoku.htm. [acessado em 27-junho-2014].
+
