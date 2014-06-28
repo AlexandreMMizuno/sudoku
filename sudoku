@@ -103,9 +103,6 @@ int verificaColuna(VetorBi *matriz, int jFinal, int addNum){
 
 int verificatresPorTres(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFinal, int addNum){
      int i,j, resp=0;
-       
-     //  printf("%d, %d, %d \n", jInicial, iFinal, jFinal);
-     //  system("pause");
       
       if(jFinal > jInicial)
       {
@@ -115,25 +112,18 @@ int verificatresPorTres(VetorBi *matriz, int iInicial, int jInicial, int iFinal,
            {                              
               if(addNum == matriz->matriz[i][j]){
                  resp = 1; 
-            //     printf("%d \n",resp);   
-           //      system("pause"); 
                  break;
               } 
               
-              else if(addNum != matriz->matriz[i][j] && (jInicial+1) == jFinal) resp = 0;
-              
-          //    printf("%d - %d \n", matriz->matriz[i][j], addNum);
-           //   printf("[%d,%d] \n", i, j); 
-            //  system("pause");    
+              else if(addNum != matriz->matriz[i][j] && (jInicial+1) == jFinal) resp = 0;  
            }
        }
-    //          system("pause");
      }
      return resp;           
 }
 
 int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFinal){
-    int verifLinha=0, verifColuna=0, verifRegiao=0,verifLinha2=0, verifColuna2=0, verifRegiao2=0, aux, terminou=0,i,j;
+    int verifLinha=0, verifColuna=0, verifRegiao=0, aux, terminou=0,i,j;
     
      for ( i = iInicial; i <= iFinal; i++ )
        {                   
@@ -148,18 +138,9 @@ int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFi
             if(j>0)verifColuna = verificaColuna(matriz, j, matriz->matriz[iFinal][jFinal]);
             else verifColuna = verificaColuna(matriz, i, matriz->matriz[iFinal][jFinal]);
             verifRegiao = verificatresPorTres(matriz, iInicial, jInicial, i, jFinal, matriz->matriz[iFinal][jFinal]);
-            
-            if(j>2)verifLinha2 = verificaLinha(matriz, i, j, matriz->matriz[i][j]);
-            if(j>0)verifColuna2 = verificaColuna(matriz, j, matriz->matriz[i][j]);
-            else verifColuna2 = verificaColuna(matriz, i, matriz->matriz[i][j]);         
-            verifRegiao2 = verificatresPorTres(matriz, iInicial, jInicial, i, jFinal, matriz->matriz[i][j]);
-            
-          
-            printf("%d,%d,%d,%d,%d\n",verifLinha,verifColuna,verifRegiao,matriz->matriz[i][j],matriz->matriz[iFinal][jFinal] );
-             system("pause");
-            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0, verifLinha2 == 0 && verifColuna2 == 0 && verifRegiao2 == 0){
+                   
+            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0 ){
                terminou = 1;
-               printf("fora: %d,%d,%d,%d,%d\n",verifLinha,verifColuna,verifRegiao,verifLinha2,verifColuna2,verifRegiao2,matriz->matriz[i][j],matriz->matriz[iFinal][jFinal] );
                break;
             }
                                 
@@ -168,18 +149,11 @@ int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFi
                matriz->matriz[iFinal][jFinal] = matriz->matriz[i][j];
                matriz->matriz[i][j] = aux; 
                terminou = 0;  
-               
-               printf("else: %d,%d,%d,%d,%d\n",verifLinha,verifColuna,verifRegiao,matriz->matriz[i][j],matriz->matriz[iFinal][jFinal] ); 
-            }          
-            
-      //      system("pause");
+            }                      
           }
           verifLinha=0;
           verifColuna=0;
           verifRegiao=0;
-          verifLinha2=0;
-          verifColuna2=0;
-          verifRegiao2=0;
        }
        
        return terminou;
@@ -209,12 +183,10 @@ void atribuirValores(VetorBi *matriz){
                   if(iFinal <=2 && jFinal <= 2){                                 
                       matriz->matriz[i][j] = vetor[cont];  
                       cont++;
-              //        printf("%d ", matriz->matriz[i][j]);  
                   }                 
                   else{
                        
-                       terminou = 0;
-                //       printf("[%d,%d] - [%d,%d] \n", iInicial, jInicial, iFinal, jFinal);   
+                       terminou = 0;  
                        do{
                            if(j>2)verifLinha = verificaLinha(matriz, i, j, addNum);
                            if(j>0)verifColuna = verificaColuna(matriz, j, addNum);
@@ -222,51 +194,27 @@ void atribuirValores(VetorBi *matriz){
                            
                            verifRegiao = verificatresPorTres(matriz, iInicial, jInicial, i, jFinal, addNum);
                            
-                   //        printf("%d,%d,%d \n", verifLinha, verifColuna, verifRegiao);
-                      //     printf("coluna: %d,%d\n", j, addNum);
-                           
                            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0){
                              matriz->matriz[i][j] = addNum;
                              terminou = 1;
-
-                         // printf("%d,%d,%d,%d,%d \n", iInicial, jInicial, i, jFinal, matriz->matriz[i][j]);  
-                     //       printf("[%d,%d] - %d \n", i,j,matriz->matriz[i][j]);  
-                     //        system("pause"); 
                            }
-                           
-                           
-                            
-                       //   printf("%d,%d\n", i, j);                                                 
-                       //   printf("%d,%d,%d \n", verifLinha, verifColuna, verifRegiao);
-                        //  printf("%d - %d\n", matriz->matriz[i][j],terminou );
-                       //    system("pause"); 
 
-                          if(i == iFinal && j == jFinal && terminou ==0 && addNum !=0){
+                         /* if(i == iFinal && j == jFinal && terminou ==0 && addNum !=0){
                               matriz->matriz[i][j] = addNum;
-                    //         printf("%d -- %d\n", matriz->matriz[i][j],terminou );
-                        //     system("pause"); 
-                              do{
-                                 
-                                   acabou = trocarValor(matriz, iInicial, jInicial, iFinal, jFinal);                                     
-                          //           printf("asdf");                                    
+                              do{                                 
+                                   acabou = trocarValor(matriz, iInicial, jInicial, iFinal, jFinal);                                                                        
                               }while(acabou != 1);
-                          }
+                          }*/
                           addNum++;
-
-
+                         
                        }while(terminou != 1);
-                       if(addNum>9)addNum = 1; 
-
-                       
-                //        printf("%d \n", matriz->matriz[i][j]);  
-                 //          system("pause"); 
+                       addNum = 1; 
                   }
                   verifLinha=0;
                   verifColuna=0;
                   verifRegiao=0; 
                   
-              }  
-             printf("\n");                
+              }                
        }
        
        cont = 0;
@@ -324,14 +272,10 @@ int main(){
     
     atribuirValores(m);
     
-   // VetorBi *mTrans = funcaoTransposta(m); 
-    
-    printf("Matriz\n");
+    printf("Sudoku\n\n");
     imprimirMatriz(m);
-   // printf("\n\nMatriz Transposta\n");
-   // imprimirMatriz(mTrans);
+
     desalocar(m); 
-   // desalocar(mTrans);  
     system("pause");
     return 0; 
 }
