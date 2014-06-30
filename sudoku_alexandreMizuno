@@ -122,51 +122,81 @@ int verificatresPorTres(VetorBi *matriz, int iInicial, int jInicial, int iFinal,
      return resp;           
 }
 
-int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFinal){
-    int verifLinha=0, verifColuna=0, verifRegiao=0, aux, terminou=0,i,j;
+int verificaNum(VetorBi *matriz, int addNum, int i, int j, int iInicial, int jInicial, int iFinal, int jFinal){
+    int verifLinha=0, verifColuna=0;
     
-     for ( i = iInicial; i <= iFinal; i++ )
-       {                   
-          for ( j = jInicial; j <= jFinal; j++ )
-          {
-            
-            aux = matriz->matriz[i][j];
-            matriz->matriz[i][j] = matriz->matriz[iFinal][jFinal];
-            matriz->matriz[iFinal][jFinal] = aux;
-            
-          //   printf("%d,%d \n",matriz->matriz[i][j], matriz->matriz[iFinal][jFinal]);
-                          
-            if(j>2)verifLinha = verificaLinha(matriz, i, j, matriz->matriz[iFinal][jFinal]);
-            if(j>0)verifColuna = verificaColuna(matriz, j, matriz->matriz[iFinal][jFinal]);
-            else verifColuna = verificaColuna(matriz, i, matriz->matriz[iFinal][jFinal]);
-            verifRegiao = verificatresPorTres(matriz, iInicial, jInicial, i, jFinal, matriz->matriz[iFinal][jFinal]);
-            
-      //      printf("%d,%d,%d \n",verifLinha, verifColuna, verifRegiao);
+    if(j>2)verifLinha = verificaLinha(matriz, i, j, addNum);
+    if(j>0)verifColuna = verificaColuna(matriz, j, addNum);
+    else verifColuna = verificaColuna(matriz, i, addNum);             
+    
+    if(verifLinha == 0 && verifColuna == 0) return 1;
+    else return 0;
+    
+}
+
+int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFinal){
+    int terminou=0 ,i, j, verifRegiao=0,num=1,achou=0,cont=0,iAtual,jAtual,aux,verifUm,verifDois;
+    
+    do
+    {
+        for ( i = iInicial; i <= iFinal; i++ )
+        {                   
+              for ( j = jInicial; j <= jFinal; j++ )
+              {
+                if(matriz->matriz[i][j] != num) {
+                   cont++;
+                }
+              }   
+        }
+        
+        if(cont == 9){
+           for ( i = iInicial; i <= iFinal; i++ )
+           {                   
+              for ( j = jInicial; j <= jFinal; j++ )
+              {
+                if(matriz->matriz[i][j] == 0) {
+                   matriz->matriz[i][j] = num;
+                   iAtual=i;
+                   jAtual=j;
                    
-            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0 ){
-               terminou = 1;
-               break;
-            }
-                                
-            else{
-               aux = matriz->matriz[iFinal][jFinal];
-               matriz->matriz[iFinal][jFinal] = matriz->matriz[i][j];
-               matriz->matriz[i][j] = aux; 
-               terminou = 0;  
-            }
-            
-       //     system("pause");                      
-          }
-          verifLinha=0;
-          verifColuna=0;
-          verifRegiao=0;
-       }
+                   break;
+                }
+              }   
+           }
+
+           for ( i = iInicial; i <= iFinal; i++ )
+           {                   
+              for ( j = jInicial; j <= jFinal; j++ )
+              {
+                verifUm = verificaNum(matriz, matriz->matriz[i][j], iAtual, jAtual, iInicial, jInicial, iFinal, jFinal);
+                if(verifUm==1){
+                   
+                    verifDois = verificaNum(matriz, matriz->matriz[iAtual][jAtual], i, j, iInicial, jInicial, iFinal, jFinal);
+                    if(verifDois==1){
+                       aux = matriz->matriz[i][j];
+                       matriz->matriz[i][j] = matriz->matriz[iAtual][jAtual];
+                       matriz->matriz[iAtual][jAtual] = aux;
+                       i= iFinal;
+                       j = jFinal;
+                    }                              
+                }                                        
+              }   
+           }
+           achou =1;       
+        }
+        
+        else cont=0;
+        
+        num++;
+        i = iInicial;
+        j = jInicial;
+    }while(achou !=1);
        
-       return terminou;
+    return terminou;
 }
 
 void atribuirValores(VetorBi *matriz){
-   int i,j, iInicial, iFinal, jInicial, jFinal, num, cont=0, addNum=1, terminou =0,acabou=0, aux;
+   int i,j, iInicial, iFinal, jInicial, jFinal, num, cont=0, addNum=1, terminou =0,acabou=0, aux,tentativa=0;
    int verifLinha=0, verifColuna=0, verifRegiao=0; 
    
    iInicial = 0;
@@ -188,9 +218,7 @@ void atribuirValores(VetorBi *matriz){
               {
                   if(iFinal <=2 && jFinal <= 2){                                 
                       matriz->matriz[i][j] = vetor[cont];  
-                      cont++;
-                      
-                 //      printf("%d ",matriz->matriz[i][j]);
+                      cont++;                     
                   }                 
                   else{
                        
@@ -204,33 +232,27 @@ void atribuirValores(VetorBi *matriz){
                            
                            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0){
                              matriz->matriz[i][j] = addNum;
-                             
-                       //      printf("%d ", matriz->matriz[i][j]);
-                             
+                             tentativa=0;                          
                              terminou = 1;
                            }
-                          
-                          if(i == iFinal && j == jFinal && terminou ==0 && addNum !=0){
-                              matriz->matriz[i][j] = addNum;
-                         
-                              do{                                 
-                                   acabou = trocarValor(matriz, iInicial, jInicial, iFinal, jFinal);                                                                        
-                              }while(acabou != 1);
+
+                          if(tentativa >10 ){                            
+                             trocarValor(matriz, iInicial, jInicial, iFinal, jFinal);
+                             terminou = 1;
                           }
-                          addNum++;
+                         if(addNum<9)addNum++;
+                         tentativa++;
                          
                        }while(terminou != 1);
+                       tentativa=0;
                        addNum = 1;
-                       
                   }
                   verifLinha=0;
                   verifColuna=0;
                   verifRegiao=0;              
-              }
-           //   printf("\n");
-              
-           //   system("pause");               
+              }            
        }
+        printf("\n");
        
        cont = 0;
        embaralharNumeros(vetor);
@@ -263,7 +285,7 @@ void imprimirJogo(VetorBi *matriz, FILE *saida){
    do 
    {
        if(contLinha%3 == 0 && contLinha%9 != 0) fprintf (saida, "<tr class='bordaLinha'>\n");
-        else fprintf (saida, "</tr>\n");
+        else fprintf (saida, "<tr>\n");
         
        for ( i = iInicial; i <= iFinal; i++ )
        {               
@@ -312,7 +334,7 @@ void imprimirResolucao(VetorBi *matriz, FILE *saida){
    do 
    {
        if(contLinha%3 == 0 && contLinha%9 != 0) fprintf (saida, "<tr class='bordaLinha'>\n");
-        else fprintf (saida, "</tr>\n");
+        else fprintf (saida, "<tr>\n");
         
        for ( i = iInicial; i <= iFinal; i++ )
        {               
@@ -321,10 +343,10 @@ void imprimirResolucao(VetorBi *matriz, FILE *saida){
              if(contColuna%3 == 0 && contColuna%9 != 0)fprintf (saida, "<td class='bordaColuna'>%d</td>\n", matriz->matriz[i][j]);
              
              else fprintf (saida, "<td>%d</td>\n", matriz->matriz[i][j]);  
-             
              contColuna++;           
-          }  
+          } 
        }
+       
        contLinha++;
        fprintf (saida, "</tr>\n");
 
@@ -357,6 +379,6 @@ int main(){
 
     desalocar(m);
     fclose (saida); 
-  //  system("pause");
+   // system("pause");
     return 0; 
 }
