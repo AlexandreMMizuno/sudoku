@@ -133,11 +133,15 @@ int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFi
             aux = matriz->matriz[i][j];
             matriz->matriz[i][j] = matriz->matriz[iFinal][jFinal];
             matriz->matriz[iFinal][jFinal] = aux;
+            
+          //   printf("%d,%d \n",matriz->matriz[i][j], matriz->matriz[iFinal][jFinal]);
                           
             if(j>2)verifLinha = verificaLinha(matriz, i, j, matriz->matriz[iFinal][jFinal]);
             if(j>0)verifColuna = verificaColuna(matriz, j, matriz->matriz[iFinal][jFinal]);
             else verifColuna = verificaColuna(matriz, i, matriz->matriz[iFinal][jFinal]);
             verifRegiao = verificatresPorTres(matriz, iInicial, jInicial, i, jFinal, matriz->matriz[iFinal][jFinal]);
+            
+      //      printf("%d,%d,%d \n",verifLinha, verifColuna, verifRegiao);
                    
             if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0 ){
                terminou = 1;
@@ -149,7 +153,9 @@ int trocarValor(VetorBi *matriz, int iInicial, int jInicial, int iFinal, int jFi
                matriz->matriz[iFinal][jFinal] = matriz->matriz[i][j];
                matriz->matriz[i][j] = aux; 
                terminou = 0;  
-            }                      
+            }
+            
+       //     system("pause");                      
           }
           verifLinha=0;
           verifColuna=0;
@@ -183,6 +189,8 @@ void atribuirValores(VetorBi *matriz){
                   if(iFinal <=2 && jFinal <= 2){                                 
                       matriz->matriz[i][j] = vetor[cont];  
                       cont++;
+                      
+                 //      printf("%d ",matriz->matriz[i][j]);
                   }                 
                   else{
                        
@@ -196,25 +204,32 @@ void atribuirValores(VetorBi *matriz){
                            
                            if(verifLinha == 0 && verifColuna == 0 && verifRegiao == 0){
                              matriz->matriz[i][j] = addNum;
+                             
+                       //      printf("%d ", matriz->matriz[i][j]);
+                             
                              terminou = 1;
                            }
-
-                         /* if(i == iFinal && j == jFinal && terminou ==0 && addNum !=0){
+                          
+                          if(i == iFinal && j == jFinal && terminou ==0 && addNum !=0){
                               matriz->matriz[i][j] = addNum;
+                         
                               do{                                 
                                    acabou = trocarValor(matriz, iInicial, jInicial, iFinal, jFinal);                                                                        
                               }while(acabou != 1);
-                          }*/
+                          }
                           addNum++;
                          
                        }while(terminou != 1);
-                       addNum = 1; 
+                       addNum = 1;
+                       
                   }
                   verifLinha=0;
                   verifColuna=0;
-                  verifRegiao=0; 
-                  
-              }                
+                  verifRegiao=0;              
+              }
+           //   printf("\n");
+              
+           //   system("pause");               
        }
        
        cont = 0;
@@ -232,26 +247,38 @@ void atribuirValores(VetorBi *matriz){
    }while(iFinal <9);
 }
 
-void imprimirMatriz(VetorBi *matriz){
-   int i,j, iInicial, iFinal, jInicial, jFinal; 
+void imprimirJogo(VetorBi *matriz, FILE *saida){
+   int i,j, iInicial, iFinal, jInicial, jFinal, contColuna=1, contLinha=1; 
    
    iInicial = 0;
    iFinal = 2;
    jInicial = 0;
    jFinal = 2;
    
+   fprintf (saida, "<style> table{border: 1px solid #333;}\n .bordaColuna{border-right: 3px solid #EC3237;}\n .bordaLinha td{border-bottom: 3px solid #EC3237;}\n td{border: 1px solid #333;padding: 15px;text-align: center;}</style>\n");
+   fprintf (saida, "<h2>Sudoku</h2>\n");
+   fprintf (saida, "<h3>Jogo</h3>\n");
+   fprintf (saida, "<table cellspacing='0'>\n");
+   fprintf (saida, "<tbody>\n");
    do 
    {
+       if(contLinha%3 == 0 && contLinha%9 != 0) fprintf (saida, "<tr class='bordaLinha'>\n");
+        else fprintf (saida, "</tr>\n");
+        
        for ( i = iInicial; i <= iFinal; i++ )
-       {                   
-              for ( j = jInicial; j <= jFinal; j++ )
-              {   
-              printf("[%d,%d]=%d ",i,j,matriz->matriz[i][j]);            
-              }
-              printf("\n");
+       {               
+          for ( j = jInicial; j <= jFinal; j++ )
+          { 
+             if(contColuna%3 == 0 && contColuna%9 != 0)fprintf (saida, "<td class='bordaColuna'>%d</td>\n", matriz->matriz[i][j]);
+             
+             else fprintf (saida, "<td>%d</td>\n", matriz->matriz[i][j]);  
+             
+             contColuna++;           
+          }  
        }
-       printf("\n");
-       printf("\n");
+       contLinha++;
+       fprintf (saida, "</tr>\n");
+
        jInicial = jFinal + 1;
        jFinal = jFinal + 3;
        
@@ -263,20 +290,73 @@ void imprimirMatriz(VetorBi *matriz){
        }
 
    }while(iFinal <9);
+   
+   fprintf (saida, "<tbody>\n");
+   fprintf (saida, "<table>\n");
+}
+
+void imprimirResolucao(VetorBi *matriz, FILE *saida){
+   int i,j, iInicial, iFinal, jInicial, jFinal, contColuna=1, contLinha=1; 
+   
+   iInicial = 0;
+   iFinal = 2;
+   jInicial = 0;
+   jFinal = 2;
+   
+   fprintf (saida, "<style> table{border: 1px solid #333;}\n .bordaColuna{border-right: 3px solid #EC3237;}\n .bordaLinha td{border-bottom: 3px solid #EC3237;}\n td{border: 1px solid #333;padding: 15px;text-align: center;}</style>\n");
+   
+   fprintf (saida, "<h4>-------------------------------------------------------------------------------------</h4>\n");
+   fprintf (saida, "<h3>Gabarito</h3>\n");
+   fprintf (saida, "<table cellspacing='0'>\n");
+   fprintf (saida, "<tbody>\n");
+   do 
+   {
+       if(contLinha%3 == 0 && contLinha%9 != 0) fprintf (saida, "<tr class='bordaLinha'>\n");
+        else fprintf (saida, "</tr>\n");
+        
+       for ( i = iInicial; i <= iFinal; i++ )
+       {               
+          for ( j = jInicial; j <= jFinal; j++ )
+          { 
+             if(contColuna%3 == 0 && contColuna%9 != 0)fprintf (saida, "<td class='bordaColuna'>%d</td>\n", matriz->matriz[i][j]);
+             
+             else fprintf (saida, "<td>%d</td>\n", matriz->matriz[i][j]);  
+             
+             contColuna++;           
+          }  
+       }
+       contLinha++;
+       fprintf (saida, "</tr>\n");
+
+       jInicial = jFinal + 1;
+       jFinal = jFinal + 3;
+       
+       if(jFinal > 8){
+          iInicial = iFinal + 1;
+          iFinal = iFinal + 3;  
+          jInicial = 0;
+          jFinal = 2;        
+       }
+
+   }while(iFinal <9);
+   
+   fprintf (saida, "<tbody>\n");
+   fprintf (saida, "<table>\n");
 }
 
 int main(){
     VetorBi *m= matriz(9,9); 
-    
+    FILE * saida;
     int i,j; 
-    
+   
+    saida = fopen ("sudoku.html","w");
     atribuirValores(m);
     
-    printf("Sudoku\n\n");
-    imprimirMatriz(m);
+    imprimirJogo(m,saida);
+    imprimirResolucao(m,saida);
 
-    desalocar(m); 
-    system("pause");
+    desalocar(m);
+    fclose (saida); 
+  //  system("pause");
     return 0; 
 }
-
