@@ -277,8 +277,8 @@ void imprimirJogo(VetorBi *matriz, FILE *saida){
    jInicial = 0;
    jFinal = 2;
    
-   fprintf (saida, "<style> table{border: 1px solid #333;}\n .bordaColuna{border-right: 3px solid #EC3237;}\n .bordaLinha td{border-bottom: 3px solid #EC3237;}\n td{border: 1px solid #333;padding: 15px;text-align: center;}</style>\n");
-   fprintf (saida, "<h2>Sudoku</h2>\n");
+   fprintf (saida, "<style> table{border: 1px solid #333;}\n .bordaColuna{border-right: 3px solid #EC3237;}\n .bordaLinha td{border-bottom: 3px solid #EC3237;}\n td{border: 1px solid #333;padding: 15px;text-align: center;}\n td.gabarito{padding: 6px;}\n h4{padding:0;margin: 0;}\n .hand{cursor: pointer;}</style>\n");
+   fprintf (saida, "<h2>Sudoku <input type='button' name='imprimir' value='Imprimir' title='Imprimir Jogo' alt='Imprimir Jogo' class='hand' onclick='window.print();'></h2>\n");
    fprintf (saida, "<h3>Jogo</h3>\n");
    fprintf (saida, "<table cellspacing='0'>\n");
    fprintf (saida, "<tbody>\n");
@@ -324,9 +324,7 @@ void imprimirResolucao(VetorBi *matriz, FILE *saida){
    iFinal = 2;
    jInicial = 0;
    jFinal = 2;
-   
-   fprintf (saida, "<style> table{border: 1px solid #333;}\n .bordaColuna{border-right: 3px solid #EC3237;}\n .bordaLinha td{border-bottom: 3px solid #EC3237;}\n td{border: 1px solid #333;padding: 15px;text-align: center;}</style>\n");
-   
+     
    fprintf (saida, "<h4>-------------------------------------------------------------------------------------</h4>\n");
    fprintf (saida, "<h3>Gabarito</h3>\n");
    fprintf (saida, "<table cellspacing='0'>\n");
@@ -340,9 +338,9 @@ void imprimirResolucao(VetorBi *matriz, FILE *saida){
        {               
           for ( j = jInicial; j <= jFinal; j++ )
           { 
-             if(contColuna%3 == 0 && contColuna%9 != 0)fprintf (saida, "<td class='bordaColuna'>%d</td>\n", matriz->matriz[i][j]);
+             if(contColuna%3 == 0 && contColuna%9 != 0)fprintf (saida, "<td class='gabarito bordaColuna'>%d</td>\n", matriz->matriz[i][j]);
              
-             else fprintf (saida, "<td>%d</td>\n", matriz->matriz[i][j]);  
+             else fprintf (saida, "<td class='gabarito'>%d</td>\n", matriz->matriz[i][j]);  
              contColuna++;           
           } 
        }
